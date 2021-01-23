@@ -6,132 +6,143 @@ This tutorial is based on https://dzone.com/articles/apache-spark-setting-up-a-c
 
 ### 1. Create AWS Instance (Select Ubuntu Server) and download PuTTY
 
-### 2. SSH into your instance 
-
- Download your EC2 key pair file and convert it to ppk format in PuTTYGen and then lunch PuTTY.
-
- Type ubuntu@ and paste instance's public DNS:
-
-
+Set up security group. The easiest eay is to let any IP to connect to any port but remember that is also the least safe.
+Necessary is to allow port 22 to connect with your desktop computer's IP and port 7077 with your slaves IP. But unless you are not affraid of lack of security, go the easiet way as I did and as it is shown:
 
 ![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
 
- Select your PPK file:
+
+Make template (common for both types master and slave) for your instance so you will be able to make as many of them as you wish without much more effort.
+I used ubuntu distribution so choose the same or feel free for any other but some commands may not work.
+
+Copy and paste this shell script in User data (also with the prefix "#!/bin/bash"). I will describe later what this commands do.
+
+![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
+
+### 2. SSH into your instance 
+
+ You can SSH without PuTTY but I would recommend to use it.
+ 
+ Download your EC2 key pair file and convert it to ppk format in PuTTYGen and then lunch PuTTY.
+ Make two sessions : slave and master
+ The only difference between them is tunneling so start with the slave.
+ Slave:
+ Set path to your key pair in ppk format:
+ 
+![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
+
+ Set connection settings as shown. In other case PuTTY will end your connection if you don't have any activity for some time.
 
 ![](https://github.com/mrkjankowski/Tutorials/blob/Photos/1.png)
 
-And click Open.
-
-### 3. Download and install Anaconda
-
-Type in terminal:
-
-```
-$ wget http://repo.continuum.io/archive/Anaconda3-4.1.1-Linux-x86_64.sh
-$ bash Anaconda3–4.1.1-Linux-x86_64.sh
-```
-
- Press Enter through the license agreements, then Enter **yes** to accept, then Enter again to accept the     default location. Then reset terminal.
-
-### 4. Prepare Jupyter
-
-```
-$ jupyter notebook --generate-config
-$ mkdir certs
-$ cd certs
-$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
-
-```
-
- You’ll get asked some general questions after running that last line. Just fill them out with some general    information.  
-
-Then we will use visual editor (vi) to edit the file. 
-
-```
-$ cd ~/.jupyter/
-$ vi jupyter_notebook_config.py
-```
-
-Press "**i**" on your keyboard and then at the top of the file type:
-
-```
-c = get_config()
-c.NotebookApp.certfile = u'/home/ubuntu/certs/mycert.pem' 
-c.NotebookApp.ip = '*'
-c.NotebookApp.open_browser = False 
-c.NotebookApp.port = 8888
-```
-
- Then press **ESC** and type "**:wq**" to write and quit.
-
-### 5.  Install Java 
-
-```
-$ cd
-$ sudo apt-get -y install openjdk-8-jdk-headless
-```
-
-### 6. Install Apache Spark: 
-
-```
-$ mkdir ~/server
-$ cd ~/server
-$ wget http://ftp.man.poznan.pl/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz \
-$ tar xvzf spark-2.4.4-bin-hadoop2.7.tgz
-$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
-```
-
-This is the end of installing the application.
-
-### 7. Tunneling on Putty
-
-Now we will create a tunnel to be able to open Jupyter and to get informations about our cluster in the browser.
-
-Open PuTTY, type your instance's public DNS and browse your PPK file same as in the second point.
-
-Then create tunnels:
+Name your session and save it:
 
 ![](https://github.com/mrkjankowski/Tutorials/blob/Photos/2.png)
 
+Master:
+Load your slave session and set up tunneling as shown:
+
 ![](https://github.com/mrkjankowski/Tutorials/blob/Photos/3.png)
 
-Then click Open.
+There are required two tunnels:
+   8000 -> localhost:8888 for jupyter notebook
+   8001 -> localhost:8080 for spark cluster manager
+Name session and save it like before.
 
-### 8. Starting the Jupyter
+To SSH into your instance just choose either you connect to master or slave. Load session and write in host name:
+ubuntu@"yourEC2instancePublicIP" for example ubuntu@11.111.11.11
+You can use public DNS instead of IP.
+Click open and you should be connected.
 
-```
-$ jupyter notebook
-```
+### 3. Step by step
 
-Startup takes some time. You should see something like this:
-
-![](https://github.com/mrkjankowski/Tutorials/blob/Photos/5.png)
-
- Copy the selected URL, open your browser and paste URL. Then change "localhost:8888" to "localhost:8000".
-
-
-
-### 9. Startup Master
-
-Open new terminal in Jupyter and type:
+ Not necessery but worth to be done. These commands will make apt-get up to date.
 
 ```
-$ cd ~/server
-$  ./spark-2.4.4-bin-hadoop2.7/sbin/start-master.sh
+apt-get update
+apt-get upgrade -y
 ```
 
- Navigate to port 8001 and you get a snapshot of the cluster:
+cd moves to specified directory.
+wget downloads file from the web. Be aware that the version of Spark may change so before you should visit this website:
+http://ftp.man.poznan.pl/apache/spark
+tar unzips downloaded file
 
-![](https://github.com/mrkjankowski/Tutorials/blob/Photos/6.png) 
-
- The URL highlighted in red is the Spark URL for the Cluster. Copy it down as you will need it to start the slave. 
-
-### 10. Slave Startup
-
-```cd ~/server
-$ cd ~/server
-$ ./spark-2.4.4-bin-hadoop2.7/sbin/start-slave.sh spark://ip-172-31-22-200.us-west-1.compute.internal:7077
+```
+cd /usr/local/
+wget http://ftp.man.poznan.pl/apache/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
+tar xvzf spark-3.0.1-bin-hadoop2.7.tgz
 ```
 
- And with that, your cluster should be functioning. Hit the status page again at port 8001 to check for it. Observe that you can see the slave under Workers, along with the number of core available and the memory. 
+These echo commands append the file with text in paranthesis. $ means that you use a variable so separate $ sign from var name.
+export set up local variable and .bashrc is executed every time you SSH.
+But because the session was estabilished before we need to source it, because we will need these variables.
+```
+echo "export SPARK_HOME=/usr/local/spark-3.0.1-bin-hadoop2.7" >> /home/ubuntu/.bashrc
+......
+echo "export PATH=$""PATH:$""ANACONDA/bin" >> /home/ubuntu/.bashrc
+source /home/ubuntu/.bashrc
+```
+
+We need scala and java for spark and that's how you get it.
+
+```
+apt-get -y install openjdk-8-jdk-headless
+apt-get install scala -y
+```
+
+We need to install anaconda. Slave nodes does not require whole anaconda but all nodes should have same version of Python.
+Pip is for installing python packages and is needed only on master.
+chown command change owner of the directory. Because we use shell script from user data, all the commands are executed with root level so we need to use chown.
+You can also copy paste (in putty u paste with right mouse button) all commands to terminal after SSH, but some of commands may need sudo prefix. They simply need root level.
+
+```
+cd /home/ubuntu/
+wget https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh -O anaconda.sh
+bash anaconda.sh -b -p anaconda
+source .profile
+conda install pip -y
+chown -R ubuntu $SPARK_HOME
+```
+
+### 4. Startup Master
+Following commands need to be done in terminal
+
+On master you need to install two packages with specified version:
+
+```
+pip install twisted==18.7.0
+pip install py4j==0.10.9
+```
+
+Now you can start your master node. Just type:
+
+```
+$SPARK_HOME/sbin/start-master.sh
+
+```
+Now start jupyter:
+
+```
+jupyter notebook
+```
+
+Copy paste link with token to browser on your computer and change localhost:8888 to localhost:8000 (tunnel)
+
+
+
+### 5. Startup Slave
+
+Type "localhost:8001" into your browser and connect.
+Copy the spark url (with spark prefix)
+
+
+SSH to your slave node and type:
+
+```
+$SPARK_HOME/sbin/start-slave.sh "paste here spark url (right click)"
+```
+Refresh localhost:8001 and check if it worked.
+
+Voilà!
 
