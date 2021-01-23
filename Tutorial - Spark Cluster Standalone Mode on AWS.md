@@ -15,7 +15,7 @@ Necessary is to allow port 22 to connect with your desktop computer's IP and por
 Make template (common for both types master and slave) for your instance so you will be able to make as many of them as you wish without much more effort.
 I used ubuntu distribution so choose the same or feel free for any other but some commands may not work.
 
-Copy and paste this shell script in User data (also with the prefix "#!/bin/bash"). I will describe later what this commands do.
+Copy and paste [this shell](script) script in User data (also with the prefix "#!/bin/bash"). I will describe later what this commands do.
 
 ![0](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/awsBash.png)
 
