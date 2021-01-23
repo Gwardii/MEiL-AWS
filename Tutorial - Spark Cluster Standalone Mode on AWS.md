@@ -53,6 +53,7 @@ To SSH into your instance just choose either you connect to master or slave. Loa
 ubuntu@"yourEC2instancePublicIP" for example ubuntu@11.111.11.11
 You can use public DNS instead of IP.
 Click open and you should be connected.
+
 ![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttyHostName.png)
 ### 3. Step by step
 
