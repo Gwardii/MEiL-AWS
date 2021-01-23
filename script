@@ -1,0 +1,26 @@
+#!/bin/bash
+apt-get update
+apt-get upgrade -y
+cd /usr/local/
+wget http://ftp.man.poznan.pl/apache/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
+tar xvzf spark-3.0.1-bin-hadoop2.7.tgz
+echo "export SPARK_HOME=/usr/local/spark-3.0.1-bin-hadoop2.7" >> /home/ubuntu/.bashrc
+echo "export PATH=$""PATH:$""SPARK_HOME/bin" >> /home/ubuntu/.bashrc
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /home/ubuntu/.bashrc
+echo "export PYTHONPATH=$""SPARK_HOME/python:/home/ubuntu/anaconda/bin" >> /home/ubuntu/.bashrc
+echo "export ANACONDA=/home/ubuntu/anaconda" >> /home/ubuntu/.bashrc
+echo "export PATH=$""PATH:$""ANACONDA/bin" >> /home/ubuntu/.bashrc
+source /home/ubuntu/.bashrc
+apt-get -y install openjdk-8-jdk-headless
+apt-get install scala -y
+cd /home/ubuntu/
+wget https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh -O anaconda.sh
+bash anaconda.sh -b -p anaconda
+source .profile
+conda install pip -y
+chown -R ubuntu $SPARK_HOME
+
+
+
+
+
