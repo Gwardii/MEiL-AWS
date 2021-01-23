@@ -111,6 +111,7 @@ Following commands need to be done in terminal
 On master you need to install two packages with specified version:
 
 ```
+sudo chown -R ubuntu $ANACONDA
 pip install twisted==18.7.0
 pip install py4j==0.10.9
 ```
