@@ -9,7 +9,7 @@ This tutorial is based on https://dzone.com/articles/apache-spark-setting-up-a-c
 Set up security group. The easiest eay is to let any IP to connect to any port but remember that is also the least safe.
 Necessary is to allow port 22 to connect with your desktop computer's IP and port 7077 with your slaves IP. But unless you are not affraid of lack of security, go the easiet way as I did and as it is shown:
 
-![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
+![0](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/awsSecurity.png)
 
 
 Make template (common for both types master and slave) for your instance so you will be able to make as many of them as you wish without much more effort.
@@ -17,7 +17,7 @@ I used ubuntu distribution so choose the same or feel free for any other but som
 
 Copy and paste this shell script in User data (also with the prefix "#!/bin/bash"). I will describe later what this commands do.
 
-![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
+![0](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/awsBash.png)
 
 ### 2. SSH into your instance 
 
@@ -29,20 +29,20 @@ Copy and paste this shell script in User data (also with the prefix "#!/bin/bash
  Slave:
  Set path to your key pair in ppk format:
  
-![0](https://github.com/mrkjankowski/Tutorials/blob/Photos/0.png)
+![0](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttyAuth.png)
 
  Set connection settings as shown. In other case PuTTY will end your connection if you don't have any activity for some time.
 
-![](https://github.com/mrkjankowski/Tutorials/blob/Photos/1.png)
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttyConnection.png)
 
 Name your session and save it:
 
-![](https://github.com/mrkjankowski/Tutorials/blob/Photos/2.png)
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttySlaveSession.png)
 
 Master:
 Load your slave session and set up tunneling as shown:
 
-![](https://github.com/mrkjankowski/Tutorials/blob/Photos/3.png)
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttyTunneling.png)
 
 There are required two tunnels:
    8000 -> localhost:8888 for jupyter notebook
@@ -53,7 +53,7 @@ To SSH into your instance just choose either you connect to master or slave. Loa
 ubuntu@"yourEC2instancePublicIP" for example ubuntu@11.111.11.11
 You can use public DNS instead of IP.
 Click open and you should be connected.
-
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/puttyHostName.png)
 ### 3. Step by step
 
  Not necessery but worth to be done. These commands will make apt-get up to date.
@@ -130,13 +130,14 @@ jupyter notebook
 
 Copy paste link with token to browser on your computer and change localhost:8888 to localhost:8000 (tunnel)
 
-
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/jupyter.png)
 
 ### 5. Startup Slave
 
 Type "localhost:8001" into your browser and connect.
 Copy the spark url (with spark prefix)
 
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/sparkUrl.png)
 
 SSH to your slave node and type:
 
@@ -145,5 +146,6 @@ $SPARK_HOME/sbin/start-slave.sh "paste here spark url (right click)"
 ```
 Refresh localhost:8001 and check if it worked.
 
+![](https://github.com/Gwardii/MEiL-AWS/blob/main/pictures/1-4000.png)
 Voilà!
 
