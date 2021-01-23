@@ -2,7 +2,10 @@
 
 
 
-This tutorial is based on https://dzone.com/articles/apache-spark-setting-up-a-cluster-on-aws
+This tutorial is based on:
+https://dzone.com/articles/apache-spark-setting-up-a-cluster-on-aws
+https://github.com/mrkjankowski/Tutorials/blob/master/%23Setting%20up%20a%20Cluster%20on%20AWS%20with%20Putty%20and%20Apache%20Spark.md
+https://github.com/OskarBienko/Spark-cluster/blob/Spark-cluster/Deploying%20the%20Spark%20cluster.md
 
 ### 1. Create AWS Instance (Select Ubuntu Server) and download PuTTY
 
